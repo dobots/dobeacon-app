@@ -1,0 +1,40 @@
+<div class="padding" ng-controller="ScanController">
+
+<super-navbar>
+  <super-navbar-title>
+    Scan for DoBeacons
+  </super-navbar-title>
+</super-navbar>
+
+<p>{{introText}}</p>
+
+  <button class="button button-full button-positive icon-left {{scanIcon}}" ng-click="toggleScanning()">
+    {{scanButtonText}}
+  </button>
+
+  <div class="card padding">
+    <h3>DoBeacons</h3>
+    <p class="balanced"><strong>List of DoBeacons in proximity.</strong></p>
+    <p></p>
+  </div>
+
+  <div class="list">
+
+    <div class="item item-button-left" ng-repeat="beacon in beacons">
+      {{beacon}}
+      <button class="button button-positive">
+	<i class="icon super-bluetooth"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <!--
+  <input ng-model="testMessage"/>
+
+  <h3>Thank you for your message:</h3>
+  <div>
+    {{testMessage}}
+  </div>
+  -->
+</div>
