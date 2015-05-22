@@ -24,15 +24,24 @@ angular
       callback = function(device) {
         var address = device.address;
         console.log("BLE device with address " + address + " is visible");
-        if ($scope.beacons.indexOf(address + '') === -1) {
-          console.log("Add device to list");
-          $scope.beacons.push(address);
-          $scope.$apply();
-        } else {
+        //if ($scope.beacons.indexOf(address + '') === -1) {
+        if ($scope.deviceExist($scope.beacons, device)) {
           console.log("Device is already added");
+        } else {
+          console.log("Add device to list");
+          $scope.$apply(function() {
+            $scope.beacons.push(device);
+          });
         }
       };
       ble.startEndlessScan(callback);
+    }
+
+    $scope.deviceExist = function(devices, device) {
+      for (var i = 0; i < devices.length; i++) {
+        if (devices[i].address === device.address) return true;
+      }
+      return false;
     }
 
     $scope.stopScanDevices = function() {

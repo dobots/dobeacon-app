@@ -2,7 +2,7 @@
 
 module.exports =
   app:
-    name: "myProject"
+    name: "doBeacon"
 
   # steroidsAppId and steroidsApiKey headers are required by Supersonic Data
   # network:
