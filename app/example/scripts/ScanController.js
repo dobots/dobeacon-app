@@ -24,13 +24,14 @@ angular
       callback = function(device) {
         var address = device.address;
         console.log("BLE device with address " + address + " is visible");
-        //if ($scope.beacons.indexOf(address + '') === -1) {
         if ($scope.deviceExist($scope.beacons, device)) {
           console.log("Device is already added");
         } else {
           console.log("Add device to list");
           $scope.$apply(function() {
-            $scope.beacons.push(device);
+            // add id to uniquely identify beacon
+            device.id = device.address;
+            $scope.beacons.push(device); // even though explicitly applied, this is not updated immediately!
           });
         }
       };

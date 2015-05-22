@@ -17,7 +17,7 @@ module.exports =
     {
       title: "Internet"
       id: "internet"
-      location: "http://google.com" # URLs are supported!
+      location: "https://dobots.nl" # URLs are supported!
     }
   ]
 
@@ -32,6 +32,10 @@ module.exports =
     {
       id: "using-the-scanner"
       location: "example#using-the-scanner"
+    }
+    {
+      id: "beacon"
+      location: "example#beacon"
     }
   ]
 
