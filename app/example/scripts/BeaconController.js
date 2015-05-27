@@ -4,6 +4,10 @@ angular
     supersonic.logger.info('Creating BeaconController object');
     $scope.navbarTitle = "Beacon settings";
 
+    $scope.configureButtonText = 'Configure!';
+
+    $scope.configureIcon = 'super-gear-b';
+
     $scope.beacon_id = "";
 
     supersonic.ui.views.current.whenVisible( function(){
