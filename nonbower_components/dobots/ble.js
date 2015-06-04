@@ -47,10 +47,19 @@ var configIBeaconUuidUuid                        = 0x08;
 var configIBeaconRSSIUuid                        = 0x09;
 var configWifiUuid                               = 0x0A;
 
-var RESERVED = 0xFF;
+var RESERVED = 0x00;
 
 //////////////////////////////////////////////////////////////////////////////
 
+var APPLE_COMPANY_ID = 0x004c;
+var IBEACON_ADVERTISEMENT_ID = 0x0215;
+
+String.prototype.insert = function (index, string) {
+  if (index > 0)
+    return this.substring(0, index) + string + this.substring(index, this.length);
+  else
+    return string + this;
+};
 
 var BLEHandler = function() {
 	var self = this;
@@ -210,7 +219,7 @@ var BLEHandler = function() {
 	 * Discovery must be run before any of the getters/setters can be used. Or else "Service not found" errors
 	 * will be generated.
 	 */
-	self.discoverServices = function(address, callback, errorCB) {
+	self.discoverServices = function(address, callback, errorCB, successCB) {
 		console.log("Beginning discovery of services for device" + address);
 		var paramsObj = {address: address};
 		bluetoothle.discover(function(obj) { // discover success
@@ -229,6 +238,10 @@ var BLEHandler = function() {
 								callback(serviceUuid, characteristicUuid);
 							}
 						}
+					}
+
+					if (successCB) {
+						successCB();
 					}
 				}
 				else
@@ -291,13 +304,26 @@ var BLEHandler = function() {
 				if (obj.status == 'scanResult') {
 					console.log('Found device, parse and call callback if company id == ' + dobotsCompanyId);
 					var arr = bluetoothle.encodedStringToBytes(obj.advertisement);
+					// console.log('------------- debug start');
+					// console.log(JSON.stringify(obj.advertisement));
+					// // var out = (arr.map(function (x) {return x.toString(16);})).join(" ");
+					// // console.log(out);
+					// var str = "[,";
+					// for (var i = 0; i < arr.length; i++) {
+					// 	str += " " + arr[i].toString(16) + ",";
+					// }
+					// str += " ]";
+					// console.log(str);
+					// console.log('------------- debug end');
 					self.parseAdvertisement(arr, 0xFF, function(data) {
-						var value = data[0] << 8 | data[1];
-						//if (value == dobotsCompanyId) {
-							callback(obj);
-						//} else {
-						//	console.log("Found device but does have company id: " + value);
-						//}
+						var companyId = data[0] | data[1] << 8; // little endian
+						if (companyId == APPLE_COMPANY_ID) {
+							self.parseIBeaconData(obj, data);
+						}
+						if (companyId == dobotsCompanyId) {
+							obj.isCrownstone = true;
+						}
+						callback(obj);
 					})
 				} else if (obj.status == 'scanStarted') {
 					console.log('Endless scan was started successfully');
@@ -351,6 +377,58 @@ var BLEHandler = function() {
 				i += el_len + 1;
 			}
 		}
+	}
+
+	self.parseIBeaconData = function(obj, data) {
+		var companyId = data[0] | data[1] << 8; // little endian
+		var advertisementId = data[2] << 8 | data[3]; // big endian
+		if (companyId == APPLE_COMPANY_ID && advertisementId == IBEACON_ADVERTISEMENT_ID) {
+			obj.isIBeacon = true;
+			obj.uuid = self.bytesToUuid(data.subarray(4, 20));
+			obj.major = data[20] << 8 | data[21];
+			obj.minor = data[22] << 8 | data[23];
+			obj.rssi = data[24];
+
+			// make signed
+			if (obj.rssi > 127) {
+				obj.rssi -= 256;
+			}
+		} else {
+			obj.isIBeacon = false;
+		}
+	}
+
+	self.uint8toString = function(nbr) {
+		var str = nbr.toString(16);
+		return str.length < 2 ? '0' + str : str;
+	};
+
+	self.bytesToUuid = function(bytes) {
+		var separatorList = [4, 6, 8, 10];
+		var uuid = "";
+		for (var i = 0; i < bytes.length; ++i) {
+			if (separatorList.indexOf(i) >= 0) {
+				uuid += "-";
+			}
+			uuid += self.uint8toString(bytes[i]);
+		}
+		return uuid;
+	}
+
+	self.uuidToBytes = function(uuid) {
+
+		if (uuid.length != 16*2 + 4) return [];
+
+		var bytes = [];
+		for (var i = 0; i < uuid.length; ) {
+			if (uuid[i] != '-') {
+				bytes.push(parseInt(uuid[i] + uuid[i+1], 16));
+				i+=2;
+			} else {
+				i++;
+			}
+		}
+		return bytes;
 	}
 
 	/*
@@ -728,6 +806,51 @@ var BLEHandler = function() {
 		self.writeConfiguration(address, configuration, successCB, errorCB);
 	}
 
+	self.setMajor = function(address, value, successCB, errorCB) {
+		console.log("set major to " + value);
+		var configuration = {};
+		configuration.type = configIBeaconMajorUuid;
+		configuration.length = 2;
+		configuration.payload = [value];
+		self.writeConfiguration(address, configuration, successCB, errorCB);
+	}
+
+	self.setMinor = function(address, value, successCB, errorCB) {
+		console.log("set minor to " + value);
+		var configuration = {};
+		configuration.type = configIBeaconMinorUuid;
+		configuration.length = 2;
+		configuration.payload = [value];
+		self.writeConfiguration(address, configuration, successCB, errorCB);
+	}
+
+	self.setRssi = function(address, value, successCB, errorCB) {
+		console.log("set rssi to " + value);
+		var configuration = {};
+		configuration.type = configIBeaconRSSIUuid;
+		configuration.length = 1;
+		configuration.payload = [value];
+		self.writeConfiguration(address, configuration, successCB, errorCB);
+	}
+
+	self.setUuid = function(address, value, successCB, errorCB) {
+		console.log("set uuid to " + value);
+		var configuration = {};
+		configuration.type = configIBeaconUuidUuid;
+		configuration.payload = self.uuidToBytes(value);
+		configuration.length = configuration.payload.length;
+		self.writeConfiguration(address, configuration, successCB, errorCB);
+	}
+
+	self.setName = function(address, value, successCB, errorCB) {
+		console.log("set name to " + value);
+		var configuration = {};
+		configuration.type = configNameUuid;
+		configuration.payload = bluetoothle.stringToBytes(value);
+		configuration.length = configuration.payload.length;
+		self.writeConfiguration(address, configuration, successCB, errorCB);
+	}
+
 	/** Get a specific configuration, selected before in selectConfiguration
 	 */
 	self.getConfiguration = function(address, successCB, errorCB) {
@@ -776,7 +899,7 @@ var BLEHandler = function() {
 		var u8 = new Uint8Array(configuration.length+4);
 		u8[0] = configuration.type;
 		u8[1] = RESERVED;
-		u8[2] = (configuration.length & 0x0F); // endianness: least significant byte first
+		u8[2] = (configuration.length & 0xFF); // endianness: least significant byte first
 		u8[3] = (configuration.length >> 8);
 		for (var i = 0; i < configuration.payload.length; i++) {
 			u8[i+4] = configuration.payload[i];
@@ -793,7 +916,7 @@ var BLEHandler = function() {
 					var msg = 'Successfully written to "write configuration" characteristic - ' +
 						obj.status;
 					console.log(msg);
-					if (successCB) successCB(msg);
+					if (successCB) setTimeout(function() { successCB(msg)}, 500);
 				} else {
 					var msg = 'Error in writing to "write configuration" characteristic - ' +
 						obj;
