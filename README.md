@@ -1,5 +1,7 @@
 # App for DoBeacons
 
+[![Build Status](https://travis-ci.org/dobots/dobeacon-app.svg?branch=master)](https://travis-ci.org/dobots/dobeacon-app)
+
 An application for the DoBeacons, a device that is like an iBeacon, but can be plugged into a wall socket.
 
 ![Screenhost](https://github.com/dobots/dobeacon-app/blob/master/doc/scan.png)
