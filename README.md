@@ -18,3 +18,11 @@ See: https://muut.com/appgyver#!/steroids:bluetooth-low-energy-plugin
 ## Non-bower
 
 Not all javascript is available in bower yet. Copy the files from the nonbower_components to the bower_components folder.
+
+# Travis CI
+
+To enable deploying using Travis CI, the $APPGYVER_ACCESS_TOKEN_CONTENTS has to be set using the travis client
+
+1. follow the installation steps in https://github.com/travis-ci/travis.rb
+2. execute the command to set the environment variable
+	$ travis env set APPGYVER_ACCESS_TOKEN_CONTENTS `cat $HOME/.appgyver/token.json` --private

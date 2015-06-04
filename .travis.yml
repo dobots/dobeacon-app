@@ -1,0 +1,28 @@
+language: node_js
+before_install:
+- echo "Before install stage"
+- npm install -g steroids bower
+- bower install
+# add following two lines to enable deploy. also requires setting
+# the $APPGYVER_ACCESS_TOKEN_CONTENTS using tavis cli, see README.md
+#- mkdir -p $HOME/.appgyver/
+#- echo $APPGYVER_ACCESS_TOKEN_CONTENTS > $HOME/.appgyver/token.json
+install:
+- echo "Install stage"
+before_script:
+- echo "Before script stage"
+script:
+- echo "Script stage"
+- steroids update
+- steroids make
+after_success:
+- echo "After success stage"
+# add following line to enable deploy
+#- steroids deploy
+after_failure:
+- echo "After failure stage"
+after_script:
+- echo "After script stage"
+on:
+tags: true
+all_branches: true
