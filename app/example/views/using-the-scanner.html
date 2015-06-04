@@ -1,22 +1,23 @@
 <div class="padding" ng-controller="ScanController">
 
-<super-navbar>
-  <super-navbar-title>
-    Scan for DoBeacons
-  </super-navbar-title>
-</super-navbar>
+	<super-navbar>
+		<super-navbar-title>
+			Scan for DoBeacons
+		</super-navbar-title>
+	</super-navbar>
 
-<p>{{introText}}</p>
+	<p>{{introText}}</p>
 
-  <button class="button button-full button-positive icon-left {{scanIcon}}" ng-click="toggleScanning()">
-    {{scanButtonText}}
-  </button>
+	<button class="button button-full button-positive" ng-click="toggleScanning()">
+		<div ng-show="!scanning">{{scanButtonText}}</div>
+		<div class="super-refreshing" ng-show="scanning"></div>
+	</button>
 
-  <div class="card padding">
-    <h3>DoBeacons</h3>
-    <p class="balanced"><strong>List of DoBeacons in proximity.</strong></p>
-    <p></p>
-  </div>
+	<div class="card padding">
+		<h3>DoBeacons</h3>
+		<p class="balanced"><strong>List of DoBeacons in proximity.</strong></p>
+		<p></p>
+	</div>
 
 	<div class="list">
 		<super-navigate location="example#beacon" data-params-id="{{beacon}}" ng-repeat="beacon in beacons">

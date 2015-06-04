@@ -1,0 +1,52 @@
+<div class="padding" ng-controller="ConfigureAllController">
+
+  <super-navbar>
+    <super-navbar-title>
+      Configuration
+    </super-navbar-title>
+  </super-navbar>
+
+  <h3>Configure beacons</h3>
+
+  <p>Configure all beacons with a single click. Leave field empty if it should not be configured. Note: It will take some time for the configuration to propagate through the network!</p>
+
+  <button class="button button-full button-positive" ng-click="init()">
+  	Init
+  </button>
+
+  <button class="button button-full button-positive" ng-click="stop()">
+  	Stop
+  </button>
+
+  <div class="card">
+    <div class="list list-inset">
+      <label class="item item-input">
+        <i class="icon super-home placeholder-icon"></i>
+        <span class="input-label">UUID</span>
+        <textarea type="text" maxLength="36" placeholder="UUID" ng-model="uuidStr"
+            ng-model-options="{ getterSetter: true, updateOn: 'blur' }"></textarea>
+      </label>
+      <label class="item item-input ">
+        <i class="icon super-map placeholder-icon"></i>
+        <span class="input-label">Major</span>
+        <input type="number" placeholder="1" ng-model="beacon.major">
+      </label>
+      <label class="item item-input ">
+        <i class="icon super-map placeholder-icon"></i>
+        <span class="input-label">Minor</span>
+        <input type="number" placeholder="1" ng-model="beacon.minor">
+      </label>
+      <label class="item item-input ">
+        <i class="icon super-connection-bars placeholder-icon"></i>
+        <span class="input-label">Strength</span>
+        <input type="number" placeholder="-4 (dBm)" ng-model="beacon.rssi">
+      </label>
+    </div>
+  </div>
+
+  <button class="button button-full button-positive icon-left super-gear-b" ng-click="configureAll()">
+    <div class="icon super-loading-a" ng-show="processing"></div>
+    <div ng-show="!processing">Configure!</div>
+  </button>
+
+</div>

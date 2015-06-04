@@ -37,6 +37,10 @@ module.exports =
       id: "beacon"
       location: "example#beacon"
     }
+    {
+      id: "configure-all"
+      location: "example#configure-all"
+    }
   ]
 
   # drawers:
