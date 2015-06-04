@@ -67,19 +67,23 @@ angular
 			ble.connectDevice($scope.beacon.address, 20, function(success) {
 				if (success) {
 					ble.discoverServices($scope.beacon.address, function() {}, errorCB, function() {
-						ble.setName($scope.beacon.address, $scope.beacon.name, function() {
-							ble.setMajor($scope.beacon.address, $scope.beacon.major, function() {
-								ble.setMinor($scope.beacon.address, $scope.beacon.minor, function() {
-									ble.setUuid($scope.beacon.address, $scope.beacon.uuid, function() {
-										ble.setRssi($scope.beacon.address, $scope.beacon.rssi, function() {
-											console.log("success");
-											ble.disconnectDevice($scope.beacon.address);
-											$scope.setProcessing(false);
+						// dobeacon can't keep up if characteristic is written too fast, so we need
+						// to delay a bit before starting to write
+						setTimeout(function() {
+							ble.setName($scope.beacon.address, $scope.beacon.name, function() {
+								ble.setMajor($scope.beacon.address, $scope.beacon.major, function() {
+									ble.setMinor($scope.beacon.address, $scope.beacon.minor, function() {
+										ble.setUuid($scope.beacon.address, $scope.beacon.uuid, function() {
+											ble.setRssi($scope.beacon.address, $scope.beacon.rssi, function() {
+												console.log("success");
+												ble.disconnectDevice($scope.beacon.address);
+												$scope.setProcessing(false);
+											}, errorCB);
 										}, errorCB);
 									}, errorCB);
 								}, errorCB);
 							}, errorCB);
-						}, errorCB);
+						}, 500);
 					});
 				} else {
 					errorCB();
