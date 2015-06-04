@@ -18,15 +18,15 @@
     <p></p>
   </div>
 
-  <div class="list">
-    <super-navigate ng-attr-location="app/example/beacon.html?id={{beacon.id}}" ng-repeat="beacon in beacons">
-      <div class="item item-button-left">
-	{{beacon.address}}
-	<button class="button button-positive">
-           <i class="icon super-bluetooth"></i>
-	</button>
-      </div>
-    </super-navigate>
-  </div>
+	<div class="list">
+		<super-navigate location="example#beacon" data-params-id="{{beacon}}" ng-repeat="beacon in beacons">
+			<div class="item item-button-left">
+				<b>{{beacon.name}}</b> <br/> {{beacon.address}}
+				<button class="button button-positive">
+					<i class="icon super-bluetooth"></i>
+				</button>
+			</div>
+		</super-navigate>
+	</div>
 
 </div>
