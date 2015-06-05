@@ -7,12 +7,14 @@ module.exports =
     {
       title: "Index"
       id: "index"
+#      location: "example#using-the-scanner" # Supersonic module#view type navigation
       location: "example#getting-started" # Supersonic module#view type navigation
     }
     {
       title: "Settings"
       id: "settings"
-      location: "example#settings"
+      location: ""
+#      location: "example#settings"
     }
     {
       title: "Internet"
