@@ -5,7 +5,7 @@ angular
 
 	$scope.beacon = {};
 
-	var ble = new BLEHandler();
+	var ble = new BleExt();
 	var bleInitialized = false;
 
 	$scope.uuidStr = function(newUuid) {
@@ -86,13 +86,13 @@ angular
 //		}
 
 	}
-	
+
 	$scope.init = function() {
 		console.log("init");
 		ble.init(function(enabled) {});
 		bleInitialized = true;
 	}
-	
+
 	$scope.stop = function() {
 		console.log("stop");
 
@@ -104,7 +104,7 @@ angular
 		} else {
 			ble.stopEndlessScan();
 		}
-		
+
 	}
 
 	$scope.sendIBeaconMeshMessage = function(address) {

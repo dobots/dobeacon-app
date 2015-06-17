@@ -1,3 +1,10 @@
+String.prototype.insert = function (index, string) {
+  if (index > 0)
+    return this.substring(0, index) + string + this.substring(index, this.length);
+  else
+    return string + this;
+};
+
 angular
 .module('example')
 .controller('BeaconController', function($scope, supersonic) {
@@ -10,7 +17,7 @@ angular
 
 	$scope.beacon = {};
 
-	var ble = new BLEHandler();
+	var ble = new BleExt();
 
 	$scope.uuidStr = function(newUuid) {
 
@@ -34,19 +41,25 @@ angular
 				// TODO set valid
 			}
 
-			$scope.beacon.uuid = newUuid;
+			$scope.beacon.proximityUuid = newUuid;
+			console.log("$scope.beacon.proximityUuid: " + $scope.beacon.proximityUuid);
 
 		}
 
-		return $scope.beacon.uuid;
+		return $scope.beacon.proximityUuid;
 	}
 
 	supersonic.ui.views.current.whenVisible( function(){
 		$scope.beacon = JSON.parse(steroids.view.params.id);
 	});
 
+	supersonic.ui.views.current.whenHidden( function() {
+		console.log("whenHidden");
+		ble.disconnect();
+	});
+
 	$scope.processing = false;
-	
+
 	$scope.setProcessing = function(val) {
 		$scope.$apply(function() {
 			$scope.processing = val;
@@ -58,25 +71,26 @@ angular
 
 		errorCB = function() {
 			console.log("failed to configure beacon");
-			ble.disconnectDevice($scope.beacon.address);
+			ble.disconnect();
 			$scope.setProcessing(false);
 		}
 
 		configure = function() {
-			$scope.setProcessing(true);
-			ble.connectDevice($scope.beacon.address, 20, function(success) {
-				if (success) {
-					ble.discoverServices($scope.beacon.address, function() {}, errorCB, function() {
+			ble.connect(
+				$scope.beacon.address,
+				function() {
+					$scope.setProcessing(true);
+					ble.discoverServices(null, function() {
 						// dobeacon can't keep up if characteristic is written too fast, so we need
 						// to delay a bit before starting to write
 						setTimeout(function() {
-							ble.setName($scope.beacon.address, $scope.beacon.name, function() {
-								ble.setMajor($scope.beacon.address, $scope.beacon.major, function() {
-									ble.setMinor($scope.beacon.address, $scope.beacon.minor, function() {
-										ble.setUuid($scope.beacon.address, $scope.beacon.uuid, function() {
-											ble.setRssi($scope.beacon.address, $scope.beacon.rssi, function() {
+							ble.writeDeviceName($scope.beacon.name, function() {
+								ble.writeBeaconMajor($scope.beacon.major, function() {
+									ble.writeBeaconMinor($scope.beacon.minor, function() {
+										ble.writeBeaconUuid($scope.beacon.proximityUuid, function() {
+											ble.writeBeaconRssi($scope.beacon.txPower, function() {
 												console.log("success");
-												ble.disconnectDevice($scope.beacon.address);
+												ble.disconnect();
 												$scope.setProcessing(false);
 											}, errorCB);
 										}, errorCB);
@@ -84,14 +98,13 @@ angular
 								}, errorCB);
 							}, errorCB);
 						}, 500);
-					});
-				} else {
-					errorCB();
-				}
-			})
+					}, errorCB);
+				},
+				errorCB()
+			);
 		}
 
-		ble.init(function(enabled) {
+		ble.init(function() {
 			bleInitialized = true;
 			configure();
 		});
