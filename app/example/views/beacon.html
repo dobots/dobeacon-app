@@ -39,14 +39,14 @@
       <label class="item item-input ">
         <i class="icon super-connection-bars placeholder-icon"></i>
         <span class="input-label">Strength</span>
-        <input type="number" placeholder="-4 (dBm)" ng-model="beacon.rssi">
+        <input type="number" placeholder="-4 (dBm)" ng-model="beacon.txPower">
       </label>
     </div>
   </div>
 
-  <button class="button button-full button-positive icon-left {{configureIcon}}" ng-click="configureBeacon()">
+  <button class="button button-full button-positive icon-left" ng-click="configureBeacon()">
     <div class="icon super-loading-a" ng-show="processing"></div>
-    <div ng-show="!processing">{{configureButtonText}}</div>
+    <div ng-show="!processing">Configure!</div>
   </button>
 
 </div>
