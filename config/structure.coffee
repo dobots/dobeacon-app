@@ -43,6 +43,10 @@ module.exports =
       id: "configure-all"
       location: "example#configure-all"
     }
+    {
+      id: "presence"
+      location: "example#presence"
+    }
   ]
 
   # drawers:

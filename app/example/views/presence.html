@@ -1,0 +1,83 @@
+<div class="padding" ng-controller="PresenceController">
+
+<super-navbar>
+<super-navbar-title>
+	Presence
+</super-navbar-title>
+</super-navbar>
+
+<h3>Presence Test</h3>
+
+<p>Report presence back to ASK for StandBy</p>
+
+<div class="card">
+   <label class="item item-input">
+     <span class="input-label">Target Beacon:</span>
+     <input type="text" ng-model="targetBeacon">
+   </label>
+</div>
+
+<div class="card" ng-show="!loggedIn">
+	<div class="item item-divider">
+		Please Sign In to use the presence service
+	</div>
+	<div class="list">
+		<label class="item item-input">
+			<input type="text" placeholder="User Name" ng-model="userName">
+		</label>
+		<label class="item item-input">
+			<input type="password" placeholder="Password" ng-model="password">
+		</label>
+		<label class="item item-input">
+			<input type="text" placeholder="Location" ng-model="location">
+		</label>
+	</div>
+	<button class="item button button-full button-positive" ng-click="signIn()">Sign In</button>
+</div>
+
+<div ng-show="loggedIn && !scanning">
+<button class="button button-positiv button-full" ng-click="startScanDevices()">Start</button>
+</div>
+
+<div ng-show="loggedIn && scanning">
+<button class="button button-positiv button-full" ng-click="stopScanDevices()">Stop</button>
+</div>
+
+<div class="row">
+	<div class="col">
+		<b>{{beacon.name}}</b>
+	</div>
+	<div class="col">
+		<b>{{beacon.txPower}}</b>
+	</div>
+	<div class="col">
+		{{beacon.rssi}}
+	</div>
+</div>
+
+<div class="card" ng-show="loggedIn && presenceDetected">
+	<div class="item item-divider">
+		<b>Change in presence detected</b>
+	</div>
+	<div class="item item-text-wrap">
+	We detected that you passed the building entrance. Did you come or did you go?
+	</div>
+	<div class="item item-body">
+		<div class="row">
+			<div class="col col-10">
+			</div>
+			<div class="col"/>
+				<button class="button button-positive" ng-click="manualPresence(true)">Present</button>
+			</div>
+			<div class="col col-10">
+			</div>
+			<div class="col">
+				<button class="button button-positive" ng-click="manualPresence(false)">Absent</button>
+			</div>
+			<div class="col col-10">
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
