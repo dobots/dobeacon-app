@@ -30,11 +30,11 @@ angular
 				// TODO set valid
 			}
 
-			$scope.beacon.uuid = newUuid;
+			$scope.beacon.proximityUuid = newUuid;
 
 		}
 
-		return $scope.beacon.uuid;
+		return $scope.beacon.proximityUuid;
 	}
 
 	supersonic.ui.views.current.whenVisible( function(){
@@ -54,7 +54,7 @@ angular
 					// check if it has the mesh characteristic
 					console.log("found ibeacon: " + device.name)
 //					ble.stopEndlessScan();
-					ble.connectAndDiscover(device.address, generalServiceUuid, meshCharacteristicUuid,
+					ble.connectAndDiscover(device.address, BleTypes.GENERAL_SERVICE_UUID, CHAR_MESH_UUID,
 						function successCB() {
 							console.log('success');
 							self.disconnectDevice(device.address);
@@ -128,57 +128,4 @@ angular
 		});
 	}
 
-	// $scope.configureBeacon = function() {
-	// 	if ($scope.processing) return;
-
-	// 	errorCB = function() {
-	// 		console.log("failed to configure beacon");
-	// 		ble.disconnectDevice($scope.beacon.address);
-	// 		$scope.processing = false;
-	// 	}
-
-	// 	configure = function() {
-	// 		$scope.processing = true;
-	// 		ble.connectDevice($scope.beacon.address, 5, function(success) {
-	// 			if (success) {
-	// 				ble.discoverServices($scope.beacon.address, function() {}, errorCB, function() {
-	// 					ble.setName($scope.beacon.address, $scope.beacon.name, function() {
-	// 						setTimeout(function() {
-	// 							ble.setMajor($scope.beacon.address, $scope.beacon.major, function() {
-	// 								setTimeout(function() {
-	// 									ble.setMinor($scope.beacon.address, $scope.beacon.minor, function() {
-	// 										setTimeout(function() {
-	// 											ble.setUuid($scope.beacon.address, $scope.beacon.uuid, function() {
-	// 												setTimeout(function() {
-	// 													ble.setRssi($scope.beacon.address, $scope.beacon.rssi, function() {
-	// 														console.log("success");
-	// 														setTimeout(function() {
-	// 															ble.disconnectDevice($scope.beacon.address);
-	// 															$scope.processing = false;
-	// 														}, 500);
-	// 													}, errorCB);
-	// 												}, 500);
-	// 											}, errorCB);
-	// 										}, 500);
-	// 									}, errorCB);
-	// 								}, 500);
-	// 							}, errorCB);
-	// 						}, 500);
-	// 					}, errorCB);
-	// 				});
-	// 			} else {
-	// 				errorCB();
-	// 			}
-	// 		})
-	// 	}
-
-	// 	if (!bleInitialized) {
-	// 		ble.init(function(enabled) {
-	// 			bleInitialized = true;
-	// 			configure();
-	// 		});
-	// 	} else {
-	// 		configure();
-	// 	}
-	// };
 });

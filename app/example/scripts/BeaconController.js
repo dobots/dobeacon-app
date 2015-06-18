@@ -87,8 +87,8 @@ angular
 							ble.writeDeviceName($scope.beacon.name, function() {
 								ble.writeBeaconMajor($scope.beacon.major, function() {
 									ble.writeBeaconMinor($scope.beacon.minor, function() {
-										ble.writeBeaconUuid($scope.beacon.proximityUuid, function() {
-											ble.writeBeaconRssi($scope.beacon.txPower, function() {
+										ble.writeBeaconProximityUuid($scope.beacon.proximityUuid, function() {
+											ble.writeBeaconCalibratedRssi($scope.beacon.calibratedRssi, function() {
 												console.log("success");
 												ble.disconnect();
 												$scope.setProcessing(false);

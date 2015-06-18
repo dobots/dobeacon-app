@@ -13,9 +13,9 @@ angular
 	var baseURL = "http://dev.ask-cs.com"
 
 	$scope.targetBeacon = "C4:4C:CA:D7:A6:ED";
-	
+
 	$scope.beacon = {};
-	
+
 //	var triggerThreshold = -50;
 
 	$scope.signIn = function() {
@@ -78,7 +78,7 @@ angular
 						if (device.address === $scope.targetBeacon) {
 							$scope.beacon = device;
 //							console.log("device: " + JSON.stringify(device));
-							if (device.rssi > device.txPower) {
+							if (device.rssi > device.calibratedRssi) {
 								$scope.$apply(function() {
 									$scope.presenceDetected = true;
 								});
