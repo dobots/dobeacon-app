@@ -4,8 +4,7 @@
 
 An application for the DoBeacons, a device that is like an iBeacon, but can be plugged into a wall socket.
 
-![Screenhost](https://github.com/dobots/dobeacon-app/blob/master/doc/scan.png)
-{:.some-css-class style="width: 35%; float: right; margin: 0px 0px 0px 20px;"}
+<img src="https://github.com/dobots/dobeacon-app/blob/master/doc/scan.png" alt="Screenshot of DoBeacon Android application" width="35%" align="right">
 
 # Develop
 
