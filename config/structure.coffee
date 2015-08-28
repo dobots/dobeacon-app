@@ -25,6 +25,8 @@ module.exports =
 
   rootView:
     location: "example#getting-started"
+    #location: "example#using-the-scanner"
+    #location: "example#presence"
 
   preloads: [
     {
@@ -34,10 +36,6 @@ module.exports =
     {
       id: "using-the-scanner"
       location: "example#using-the-scanner"
-    }
-    {
-      id: "beacon"
-      location: "example#beacon"
     }
     {
       id: "configure-all"

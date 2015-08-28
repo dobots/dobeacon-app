@@ -38,8 +38,30 @@
       </label>
       <label class="item item-input ">
         <i class="icon super-connection-bars placeholder-icon"></i>
-        <span class="input-label">Strength</span>
-        <input type="number" placeholder="-4 (dBm)" ng-model="beacon.calibratedRssi">
+        <span class="input-label">RSSI at 1m</span>
+        <input type="number" placeholder="-60 (dBm)" ng-model="beacon.calibratedRssi">
+      </label>
+      <label class="item item-input ">
+        <i class="icon super-wifi placeholder-icon"></i>
+        <span class="input-label">TX Power</span>
+        <div class="icon super-loading-a" ng-show="txPower == null"></div>
+        <select id="txPower" ng-model="txPower" ng-show="txPower != null">
+          <option value="4"  > +4 dB</option>
+          <option value="0"  >  0 dB</option>
+          <option value="-4" > -4 dB</option>
+          <option value="-8" > -8 dB</option>
+          <option value="-12">-12 dB</option>
+          <option value="-16">-16 dB</option>
+          <option value="-20">-20 dB</option>
+          <option value="-30">-30 dB</option>
+          <option value="-40">-40 dB</option>
+        </select>
+      </label>
+      <label class="item item-input ">
+        <i class="icon super-clock placeholder-icon"></i>
+        <span class="input-label">Ad Interval</span>
+        <div class="icon super-loading-a" ng-show="advertisementInterval == -1"></div>
+        <input type="number" placeholder="100" min="20" max="10240" ng-model="advertisementInterval"  ng-show="advertisementInterval != -1">
       </label>
     </div>
   </div>

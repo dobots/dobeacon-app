@@ -16,6 +16,8 @@ angular
 	$scope.configureIcon = 'super-gear-b';
 
 	$scope.beacon = {};
+	$scope.txPower = null;
+	$scope.advertisementInterval = -1;
 
 	var ble = new BleExt();
 
@@ -51,12 +53,55 @@ angular
 
 	supersonic.ui.views.current.whenVisible( function(){
 		$scope.beacon = JSON.parse(steroids.view.params.id);
+		setTimeout(function() {
+			$scope.getConfiguration();
+		});
 	});
 
 	supersonic.ui.views.current.whenHidden( function() {
 		console.log("whenHidden");
 		ble.disconnect();
 	});
+
+	$scope.getConfiguration = function() {
+
+		errorCB = function() {
+			console.log("failed to read configuration");
+			ble.disconnect();
+			console.log("retry ...");
+			// $scope.getConfiguration();
+		}
+
+		ble.init(function() {
+			ble.connect(
+				$scope.beacon.address,
+				function() {
+					ble.discoverServices(
+						null,
+						function() {
+							ble.readTxPower(
+								function(value) {
+									$scope.$apply(function() {
+										$scope.txPower = value;
+									});
+									ble.readAdvertisementInterval(
+										function(value) {
+											$scope.$apply(function() {
+												$scope.advertisementInterval = value;
+											});
+											console.log("read configuration success");
+											ble.disconnect();
+										}, errorCB
+									);
+								}, errorCB
+							);
+						}, errorCB
+					);
+				},
+				errorCB
+			)
+		});
+	}
 
 	$scope.processing = false;
 
@@ -76,6 +121,7 @@ angular
 		}
 
 		configure = function() {
+
 			ble.connect(
 				$scope.beacon.address,
 				function() {
@@ -89,9 +135,13 @@ angular
 									ble.writeBeaconMinor($scope.beacon.minor, function() {
 										ble.writeBeaconProximityUuid($scope.beacon.proximityUuid, function() {
 											ble.writeBeaconCalibratedRssi($scope.beacon.calibratedRssi, function() {
-												console.log("success");
-												ble.disconnect();
-												$scope.setProcessing(false);
+												ble.writeTxPower($scope.txPower, function() {
+													ble.writeAdvertisementInterval($scope.advertisementInterval, function() {
+														console.log("success");
+														ble.disconnect();
+														$scope.setProcessing(false);
+													}, errorCB);
+												}, errorCB);
 											}, errorCB);
 										}, errorCB);
 									}, errorCB);
@@ -100,7 +150,7 @@ angular
 						}, 500);
 					}, errorCB);
 				},
-				errorCB()
+				errorCB
 			);
 		}
 
