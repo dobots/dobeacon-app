@@ -6,19 +6,28 @@ An application for the DoBeacons, a device that is like an iBeacon, but can be p
 
 <img src="https://github.com/dobots/dobeacon-app/blob/master/doc/scan.png" alt="Screenshot of DoBeacon Android application" width="35%" align="right">
 
+# Installation
+
+Follow the instructions on http://www.appgyver.io/steroids/getting_started to get started with appgyver and steroids. After installing the steroids tooling ([instructions](http://docs.appgyver.com/tooling/cli/steroids-cli/)) and checking out this repository, be sure to run
+
+    steroids update
+    
+which will install all the dependencies, before running
+
+    steroids connect
+    
+to run the app.
+
 # Develop
 
-Follow the installation instructions on http://www.appgyver.com/.
+To run the app within the development cycle, you will need to create your own Scanner app. See http://docs.appgyver.com/tooling/build-service/plugins/configuring-custom-plugins/ for explanations on how to create your custom Scanner app, and add the following to the Plugins field:
 
-## Scanner
-
-One thing you have to be aware of, is that you need to built a special Scanner app to be able to run this application within the development cycle.
-
-See: https://muut.com/appgyver#!/steroids:bluetooth-low-energy-plugin
-
-## Non-bower
-
-Not all javascript is available in bower yet. Copy the files from the nonbower_components to the bower_components folder.
+```
+[
+  {"source":"https://github.com/eggerdo/BluetoothLE.git"},
+  {"source":"https://github.com/dobots/cordova-plugin-bluenet-dfu.git#appgyver"}
+]
+```
 
 # Travis CI
 
